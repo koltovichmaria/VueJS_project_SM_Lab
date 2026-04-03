@@ -1,13 +1,35 @@
 <template>
   <div class="article-page">
-    <button @click="$router.back()">Назад</button>
-    <div v-if="article" class="article">
-      <h1>{{ article.title }}</h1>
-      <p>Автор: {{ article.author }}</p>
-      <p>{{ article.body }}</p>
-      <p>Статус: {{ article.isPublished ? 'Опубликовано' : 'Черновик' }}</p>
-      <button @click="store.togglePublished(article.id)">Изменить статус</button>
-    </div>
+    <Button icon="pi pi-arrow-left" label="Назад" class="p-button-text" @click="$router.back()" />
+    <Card v-if="article">
+      <template #header>
+        <Image
+          :src="`https://picsum.photos/seed/${article.id}/1200/400`"
+          alt="Изображение"
+          width="100%"
+          height="300px"
+          preview
+        />
+      </template>
+      <template #title>{{ article.title }}</template>
+      <template #subtitle><i class="pi pi-user"></i> {{ article.author }}</template>
+      <template #content>
+        <p class="body">{{ article.body }}</p>
+        <p class="status" :class="{ published: article.isPublished }">
+          <i :class="article.isPublished ? 'pi pi-check-circle' : 'pi pi-clock'"></i>
+          {{ article.isPublished ? 'Опубликовано' : 'Черновик' }}
+        </p>
+      </template>
+      <template #footer>
+        <Button
+          :label="article.isPublished ? 'Снять с публикации' : 'Опубликовать'"
+          :icon="article.isPublished ? 'pi pi-ban' : 'pi pi-check'"
+          :class="article.isPublished ? 'p-button-warning' : 'p-button-success'"
+          @click="store.togglePublished(article.id)"
+        />
+      </template>
+    </Card>
+    <div v-else class="not-found">Статья не найдена</div>
   </div>
 </template>
 
@@ -23,20 +45,25 @@ const article = computed(() => store.articles.find(a => a.id === parseInt(route.
 
 <style scoped>
 .article-page {
-  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
-button {
-  padding: 0.5rem 1rem;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 1rem;
+.body {
+  line-height: 1.6;
+  white-space: pre-line;
 }
-.article {
+.status {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+.status.published {
+  color: #27ae60;
+}
+.not-found {
+  text-align: center;
   background: white;
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 12px;
+  color: #e74c3c;
 }
 </style>

@@ -19,31 +19,23 @@ export const useArticleStore = defineStore('articles', {
         this.abortController = null
         this.loading = false
         this.error = 'Загрузка отменена'
-        this.articles = [] // очищаем статьи при отмене
+        this.articles = []
       }
     },
     async fetchArticles() {
-      // Отменяем предыдущий запрос, если был
-      if (this.abortController) {
-        this.abortController.abort()
-      }
+      if (this.abortController) this.abortController.abort()
       this.abortController = new AbortController()
       this.loading = true
       this.error = null
-
       try {
         const data = await articleService.fetchArticles(this.abortController)
         this.articles = data.map(article => ({
           ...article,
           isPublished: article.isPublished || false
         }))
-        this.error = null
       } catch (err) {
-        if (err.name === 'AbortError') {
-          this.error = 'Загрузка отменена'
-        } else {
-          this.error = err.message
-        }
+        if (err.name === 'AbortError') this.error = 'Загрузка отменена'
+        else this.error = err.message
         this.articles = []
       } finally {
         this.loading = false
@@ -51,9 +43,19 @@ export const useArticleStore = defineStore('articles', {
       }
     },
     async retryFetch() {
-      // При повторной загрузке сбрасываем ошибку и запускаем заново
       this.error = null
       await this.fetchArticles()
+    },
+    addArticle(articleData) {
+      const newId = Math.max(0, ...this.articles.map(a => a.id)) + 1
+      const newArticle = {
+        id: newId,
+        title: articleData.title,
+        author: articleData.author,
+        body: articleData.body,
+        isPublished: false
+      }
+      this.articles.push(newArticle)
     },
     togglePublished(id) {
       const article = this.articles.find(a => a.id === id)

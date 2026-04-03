@@ -1,27 +1,37 @@
 <template>
   <div class="home">
-    <h1>Мои статьи</h1>
+    <h1 class="title">Мои статьи</h1>
 
     <div class="controls">
-      <!-- Кнопка отмены видна во время загрузки -->
-      <button v-if="store.isLoading" @click="cancelLoad" class="cancel">Отмена</button>
-      <!-- Кнопка повтора видна при ошибке (включая отмену) -->
-      <button v-if="store.hasError" @click="retryLoad" class="retry">Повторить загрузку</button>
+      <Button
+        v-if="store.isLoading"
+        label="Отмена"
+        icon="pi pi-times"
+        class="p-button-danger"
+        @click="cancelLoad"
+      />
+      <Button
+        v-if="store.hasError"
+        label="Повторить загрузку"
+        icon="pi pi-refresh"
+        @click="retryLoad"
+      />
     </div>
 
-    <!-- Блок ошибки (если есть) -->
     <div v-if="store.hasError" class="error">
-      <p>Ошибка: {{ store.error }}</p>
+      <i class="pi pi-exclamation-triangle"></i>
+      <p>{{ store.error }}</p>
     </div>
 
-    <!-- Suspense для асинхронной загрузки ArticleList -->
     <Suspense v-else>
       <template #default>
-        <!-- Используем key, чтобы при повторной загрузке компонент пересоздавался -->
         <ArticleList :key="componentKey" />
       </template>
       <template #fallback>
-        <div class="spinner"></div>
+        <div class="spinner">
+          <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+          <p>Загрузка статей...</p>
+        </div>
       </template>
     </Suspense>
   </div>
@@ -35,10 +45,7 @@ import ArticleList from '../components/ArticleList.vue'
 const store = useArticleStore()
 const componentKey = ref(0)
 
-const cancelLoad = () => {
-  store.cancelLoading()
-}
-
+const cancelLoad = () => store.cancelLoading()
 const retryLoad = () => {
   store.error = null
   componentKey.value += 1
@@ -47,46 +54,41 @@ const retryLoad = () => {
 
 <style scoped>
 .home {
-  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.title {
+  text-align: center;
   color: white;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin-bottom: 2rem;
 }
 .controls {
-  margin: 1rem 0;
-}
-.cancel, .retry {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.cancel {
-  background: #e74c3c;
-  color: white;
-}
-.retry {
-  background: #3498db;
-  color: white;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 .error {
   background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  color: #333;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  color: #e74c3c;
   max-width: 500px;
-  margin: 1rem 0;
+  margin: 0 auto;
+}
+.error i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  margin: 2rem auto;
-  animation: spin 1s linear infinite;
+  text-align: center;
+  padding: 3rem;
+  color: white;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.spinner i {
+  display: block;
+  margin-bottom: 1rem;
 }
 </style>
