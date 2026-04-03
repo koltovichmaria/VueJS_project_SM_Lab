@@ -40,9 +40,8 @@ const cancelLoad = () => {
 }
 
 const retryLoad = () => {
-  // Увеличиваем key, чтобы пересоздать ArticleList
+  store.error = null
   componentKey.value += 1
-  store.retryFetch()
 }
 </script>
 
