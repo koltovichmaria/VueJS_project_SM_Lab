@@ -3,17 +3,22 @@
     <h1>Мои статьи</h1>
 
     <div class="controls">
+      <!-- Кнопка отмены видна во время загрузки -->
       <button v-if="store.isLoading" @click="cancelLoad" class="cancel">Отмена</button>
+      <!-- Кнопка повтора видна при ошибке (включая отмену) -->
       <button v-if="store.hasError" @click="retryLoad" class="retry">Повторить загрузку</button>
     </div>
 
+    <!-- Блок ошибки (если есть) -->
     <div v-if="store.hasError" class="error">
       <p>Ошибка: {{ store.error }}</p>
     </div>
 
+    <!-- Suspense для асинхронной загрузки ArticleList -->
     <Suspense v-else>
       <template #default>
-        <ArticleList />
+        <!-- Используем key, чтобы при повторной загрузке компонент пересоздавался -->
+        <ArticleList :key="componentKey" />
       </template>
       <template #fallback>
         <div class="spinner"></div>
@@ -23,19 +28,22 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref } from 'vue'
 import { useArticleStore } from '../stores/articleStore'
 import ArticleList from '../components/ArticleList.vue'
 
 const store = useArticleStore()
+const componentKey = ref(0)
 
-onMounted(() => {
-  // если нужно принудительно начать загрузку, но ArticleList сам вызовет
-  // оставим для возможности ручного повтора
-})
+const cancelLoad = () => {
+  store.cancelLoading()
+}
 
-const cancelLoad = () => store.cancelLoading()
-const retryLoad = () => store.retryFetch()
+const retryLoad = () => {
+  // Увеличиваем key, чтобы пересоздать ArticleList
+  componentKey.value += 1
+  store.retryFetch()
+}
 </script>
 
 <style scoped>

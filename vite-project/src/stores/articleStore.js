@@ -19,9 +19,11 @@ export const useArticleStore = defineStore('articles', {
         this.abortController = null
         this.loading = false
         this.error = 'Загрузка отменена'
+        this.articles = [] // очищаем статьи при отмене
       }
     },
     async fetchArticles() {
+      // Отменяем предыдущий запрос, если был
       if (this.abortController) {
         this.abortController.abort()
       }
@@ -35,6 +37,7 @@ export const useArticleStore = defineStore('articles', {
           ...article,
           isPublished: article.isPublished || false
         }))
+        this.error = null
       } catch (err) {
         if (err.name === 'AbortError') {
           this.error = 'Загрузка отменена'
@@ -48,6 +51,8 @@ export const useArticleStore = defineStore('articles', {
       }
     },
     async retryFetch() {
+      // При повторной загрузке сбрасываем ошибку и запускаем заново
+      this.error = null
       await this.fetchArticles()
     },
     togglePublished(id) {

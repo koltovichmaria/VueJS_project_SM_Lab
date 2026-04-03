@@ -17,7 +17,10 @@
 import { useArticleStore } from '../stores/articleStore'
 
 const store = useArticleStore()
+
+// Suspense будет ждать, пока этот промис не разрешится
 await store.fetchArticles()
+
 const articles = store.articles
 </script>
 
@@ -29,9 +32,9 @@ const articles = store.articles
 }
 .article-card {
   background: white;
-  color: black;
   padding: 1rem;
   border-radius: 8px;
+  color: black;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .actions {
