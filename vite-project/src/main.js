@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
-import BaseButton from './components/BaseButton.vue'
 import { useArticleStore } from './stores/articleStore'
 import PrimeVue from 'primevue/config';
 import Lara from '@primeuix/themes/lara';
@@ -27,7 +26,6 @@ app.use(PrimeVue, {
         preset: Lara
     }
 });
-app.component('BaseButton', BaseButton)
 app.use(ConfirmationService)
 
 app.component('Menubar', Menubar)
