@@ -3,10 +3,9 @@
     <Card v-for="article in articles" :key="article.id" class="article-card">
       <template #header>
         <Image
-          :src="`https://picsum.photos/seed/${article.id}/400/200`"
+          :src="`https://wowprofi.ru/src/Frontend/Files/MediaLibrary/01/kubanskiy.jpg`"
           alt="Изображение статьи"
           width="100%"
-          height="200px"
           preview
         />
       </template>

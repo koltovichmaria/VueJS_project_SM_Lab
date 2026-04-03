@@ -4,7 +4,7 @@
     <Card v-if="article">
       <template #header>
         <Image
-          :src="`https://picsum.photos/seed/${article.id}/1200/400`"
+          :src="`https://wowprofi.ru/src/Frontend/Files/MediaLibrary/01/kubanskiy.jpg`"
           alt="Изображение"
           width="100%"
           height="300px"

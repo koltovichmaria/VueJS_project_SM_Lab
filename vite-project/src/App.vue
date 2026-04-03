@@ -64,6 +64,10 @@ body {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-right: 1px solid #dee2e6;
+  height: 100vh;         
+  position: sticky;      
+  top: 0;
+  overflow-y: auto;      
 }
 .vertical-menu {
   height: 100%;
@@ -85,6 +89,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+
 }
 .mobile-header {
   background: rgba(255, 255, 255, 0.95);
